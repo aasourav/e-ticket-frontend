@@ -6,6 +6,7 @@ import AutoCompleteInput from "../atoms/AutoCompleteInput";
 import { getRouteApi, getTripDetails } from "../../api/trip";
 import { openNotification } from "../atoms/Notification";
 import InputWithLabel from "../molecules/InputWithLabel";
+import TripCard, { ITrip } from "../organisms/landing/tripCard/TripCard";
 
 const MainContainer = styled.div`
   display: flex;
@@ -27,21 +28,27 @@ const FlexContainer = styled.div`
   gap: 2rem;
 `;
 
+const TripWrapper = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  flex-flow: column;
+  gap: 12px;
+  align-items: center;
+`;
+
 const LandingPageMain = () => {
   const [options, setOptions] = useState<{ label: string; value: string }[]>();
-  const [searchParams, setSearchParams] = useState<{
-    from: string;
-    to: string;
-  }>();
-  const [routes, setRoutes] = useState<{ from: string; to: string }>();
+  const [routes, setRoutes] = useState<{ from?: string; to?: string }>();
+  const [trip, setTrip] = useState<ITrip[]>();
 
   const onSubmitButton = async () => {
     try {
       const { data } = await getTripDetails(
-        searchParams?.from || "",
-        searchParams?.to || ""
+        routes?.from || "",
+        routes?.to || ""
       );
-      console.log(data);
+      setTrip(data);
+      console.log("my Data: ", data);
     } catch (err: any) {
       openNotification({ type: "error", message: err.message });
     }
@@ -63,8 +70,10 @@ const LandingPageMain = () => {
     }
   };
 
-  const onSelect = async (name: string, string: any) => {
-    console.log("select:", string);
+  const onSelect = async (name: "from" | "to", string: string) => {
+    setRoutes((prev) =>
+      prev ? { ...prev, [name]: string } : { [name]: string }
+    );
   };
 
   return (
@@ -88,6 +97,10 @@ const LandingPageMain = () => {
           Search
         </CustomButton>
       </FlexContainer>
+      <TripWrapper>
+        {trip?.length &&
+          trip.map((data, idx) => <TripCard key={idx} data={data} />)}
+      </TripWrapper>
     </MainContainer>
   );
 };
