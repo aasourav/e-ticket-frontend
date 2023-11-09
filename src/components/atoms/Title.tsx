@@ -8,5 +8,7 @@ export const Title = styled.p<{
 }>`
   font-size: ${({ font_size }) => font_size};
   font-family: "Josefin";
-  margin:0;
+  font-weight: ${({ font_weight }) => font_weight};
+  color:${({ color }) => color};
+  margin: 0;
 `;
