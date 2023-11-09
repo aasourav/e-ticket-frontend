@@ -1,18 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import { Title } from "../../../atoms/Title";
+import dayjs from "dayjs";
 
-interface IPassengers {
+export interface IPassengers {
   name: string;
   phone: string;
-  seatNumber: string;
+  seatNumbers: string[];
 }
 
 export interface ITrip {
+  _id: string;
   busId: string;
   fromId: string;
   toId: string;
   busName: string;
+  numberOfSeat: number;
   from: string;
   to: string;
   price: string;
@@ -45,15 +48,19 @@ const DetailsWrapper = styled.div`
 
 interface IProps {
   data: ITrip;
+  onClickTripCard: (tripIndex: number) => void;
+  index: number;
 }
 
-const TripCard: React.FC<IProps> = ({ data }) => {
+const TripCard: React.FC<IProps> = ({ index, data, onClickTripCard }) => {
   const { busName, busType, departure_time, from, to, price } = data;
   return (
-    <MainContainer>
+    <MainContainer onClick={() => onClickTripCard(index)}>
       <TopWrapper>
         <Title font_size="24px">{busName}</Title>
-        <Title font_size="14px">{departure_time}</Title>
+        <Title font_size="14px" font_weight={500}>
+          {dayjs(departure_time).format("DD MMM, h:mm:ss A")}
+        </Title>
       </TopWrapper>
       <DetailsWrapper>
         <Title>{busType === "ac" ? "AC" : "Non AC"}</Title>

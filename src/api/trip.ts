@@ -29,3 +29,26 @@ export function getTripDetails(from: string, to: string) {
       });
   });
 }
+
+export interface IConfirmTrip {
+  name: string;
+  phone: string;
+  seatNumbers?: number[];
+  tripId: string;
+  email: string;
+  totalAmount: string;
+}
+export function confirmTripApi(value: IConfirmTrip) {
+  return new Promise<AxiosResponse<ITrip[]>>((resolve, reject) => {
+    publicInstance
+      .post(`trip/confirm-trip`, value)
+      .then((resp) => {
+        resolve(resp);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+// /confirm-trip
