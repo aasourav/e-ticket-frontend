@@ -58,7 +58,7 @@ const LandingPageMain = () => {
     try {
       const { data } = await getRouteApi(searchValue);
       setOptions(
-        data.getRoutes.map((d: { locationName: string; _id: string }) => ({
+        data.response?.map((d: { locationName: string; _id: string }) => ({
           label:
             d.locationName.charAt(0).toUpperCase() + d.locationName.slice(1),
           value:

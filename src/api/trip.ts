@@ -2,12 +2,13 @@ import { AxiosResponse } from "axios";
 import { publicInstance } from "./baseApi";
 import { ITrip } from "../components/organisms/landing/tripCard/TripCard";
 
-export function getRouteApi(routeName: string) {
+export function getRouteApi(routeName?: string) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
     publicInstance
-      .get(`route/get-route/${routeName}`)
+      .get(`route/get-route/${routeName ? routeName : undefined}`)
       .then((resp) => {
-        resolve(resp.data);
+        console.log(resp);
+        resolve(resp);
       })
       .catch((err) => {
         reject(err);
