@@ -6,6 +6,7 @@ import Image from "next/image";
 import steeringWheelPng from "../../../../assets/pngs/steering-wheel.png";
 import { IPassengers, ITrip } from "./TripCard";
 import { IPassentersInfo } from "../../../templates/LandingPageMain";
+import ResultAlert from "../../../molecules/ResultAlert";
 
 const SeatBoxWrapper = styled(Button)<{
   is_selected?: boolean;
@@ -34,7 +35,11 @@ const SeatBox = (value: any, isSelected?: boolean, isDisabled?: boolean) => {
   );
 };
 
-const StyledModal = styled(Modal)``;
+const StyledModal = styled(Modal)<{ is_footer?: boolean }>`
+  .ant-modal-footer {
+    display: ${({ is_footer }) => (is_footer ? "block" : "none")};
+  }
+`;
 
 const ModalBody = styled.div`
   display: grid;
@@ -67,10 +72,13 @@ const SecondStepWrapper = styled.div`
 
 interface IProps {
   tripBusDetails?: ITrip;
-  onCloseTripModal: () => void;
   isModalOpen?: boolean;
   selectedSeats: number[] | undefined;
   confirmTripInfo: IPassentersInfo;
+  loading?: boolean;
+  steps: number;
+  setSteps: React.Dispatch<React.SetStateAction<number>>;
+  onCloseTripModal: () => void;
   onConfirmTripSubmit: (totalAmount: string, tripId: string) => void;
   setSelectedSeats: (seatNumber: number) => void;
   onConfirmTripChange: (name: keyof IPassentersInfo, value: string) => void;
@@ -80,12 +88,14 @@ const BusSeatModal: React.FC<IProps> = ({
   tripBusDetails,
   selectedSeats,
   confirmTripInfo,
+  loading,
+  steps,
+  setSteps,
   onConfirmTripSubmit,
   onCloseTripModal,
   setSelectedSeats,
   onConfirmTripChange,
 }) => {
-  const [steps, setSteps] = useState(0);
   const seatList = Array.from(
     {
       length: tripBusDetails?.numberOfSeat || 0,
@@ -116,14 +126,17 @@ const BusSeatModal: React.FC<IProps> = ({
 
   const onOk = () => {
     setSteps((prev) => prev + 1);
-    onConfirmTripSubmit(
-      String((selectedSeats?.length || 0) * Number(tripBusDetails?.price)),
-      tripBusDetails?._id || ""
-    );
+    if (steps > 0) {
+      onConfirmTripSubmit(
+        String((selectedSeats?.length || 0) * Number(tripBusDetails?.price)),
+        tripBusDetails?._id || ""
+      );
+    }
   };
 
   return (
     <StyledModal
+      confirmLoading={steps > 0 && loading}
       open={isModalOpen}
       okText={steps === 0 ? "Next" : "Submit"}
       onOk={onOk}
@@ -131,6 +144,8 @@ const BusSeatModal: React.FC<IProps> = ({
         onCloseTripModal();
         setSteps(0);
       }}
+      is_footer={steps < 2 || loading ? true : false}
+      destroyOnClose
     >
       {steps === 0 ? (
         <>
@@ -158,7 +173,7 @@ const BusSeatModal: React.FC<IProps> = ({
             ))}
           </ModalBody>
         </>
-      ) : (
+      ) : steps === 1 || loading ? (
         <SecondStepWrapper>
           <SlipWrapper>
             <Title font_size="1.25rem" font_weight={600}>
@@ -204,6 +219,12 @@ const BusSeatModal: React.FC<IProps> = ({
             />
           </div>
         </SecondStepWrapper>
+      ) : (
+        <ResultAlert
+          status="success"
+          title="Successfully purchase ticket"
+          subTitle="We have sent you ticket by mail. Please check your mail."
+        />
       )}
     </StyledModal>
   );

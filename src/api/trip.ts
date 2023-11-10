@@ -39,13 +39,14 @@ export interface IConfirmTrip {
   totalAmount: string;
 }
 export function confirmTripApi(value: IConfirmTrip) {
-  return new Promise<AxiosResponse<ITrip[]>>((resolve, reject) => {
+  return new Promise<AxiosResponse<any>>((resolve, reject) => {
     publicInstance
       .post(`trip/confirm-trip`, value)
       .then((resp) => {
         resolve(resp);
       })
       .catch((err) => {
+        console.log("err: ", err);
         reject(err);
       });
   });

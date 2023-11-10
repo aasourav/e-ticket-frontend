@@ -13,6 +13,7 @@ import { openNotification } from "../atoms/Notification";
 import InputWithLabel from "../molecules/InputWithLabel";
 import TripCard, { ITrip } from "../organisms/landing/tripCard/TripCard";
 import BusSeatModal from "../organisms/landing/tripCard/BusSeatModal";
+import ResultAlert from "../molecules/ResultAlert";
 
 const MainContainer = styled.div`
   display: flex;
@@ -63,20 +64,24 @@ const LandingPageMain = () => {
   const [selectedTripIndex, setSelectedTripIndex] = useState<number>();
   const [trip, setTrip] = useState<ITrip[]>();
   const [selectedSeats, setSelectedSeats] = useState<number[]>();
+  const [steps, setSteps] = useState(0);
   const [confirmTripInfo, setConfirmTripInfo] = useState<IPassentersInfo>(
     initialPassengersInfo
   );
+  const [loading, setLoading] = useState(false);
 
   const onSubmitButton = async () => {
+    setLoading(true);
     try {
       const { data } = await getTripDetails(
         routes?.from || "",
         routes?.to || ""
       );
       setTrip(data);
-      console.log("my Data: ", data);
+      setLoading(false);
     } catch (err: any) {
       openNotification({ type: "error", message: err.message });
+      setLoading(false);
     }
   };
 
@@ -123,20 +128,27 @@ const LandingPageMain = () => {
   };
 
   const onConfirmTripSubmit = async (totalAmount: string, tripId: string) => {
+    setLoading(true);
     try {
-      await confirmTripApi({
+      const { data } = await confirmTripApi({
         ...confirmTripInfo,
         seatNumbers: selectedSeats,
         totalAmount,
         tripId,
       });
-      openNotification({
-        type: "info",
-        message: "Success!",
-        description: "We send your ticket by mail. please check your mail.",
-      });
+      setTrip(data.getTrip);
+      setSelectedSeats(undefined);
+      setConfirmTripInfo(initialPassengersInfo);
+      setSelectedTripIndex(undefined);
+      setOptions(undefined);
+      setLoading(false);
+      setSteps(2);
     } catch (err: any) {
-      openNotification({ type: "error", message: err.message });
+      openNotification({
+        type: "error",
+        message: err.response.data.message || err.message,
+      });
+      setLoading(false);
     }
   };
 
@@ -157,7 +169,12 @@ const LandingPageMain = () => {
           onSelect={(value) => onSelect("to", value)}
           options={options || []}
         />
-        <CustomButton type="primary" size="large" onClick={onSubmitButton}>
+        <CustomButton
+          loading={loading}
+          type="primary"
+          size="large"
+          onClick={onSubmitButton}
+        >
           Search
         </CustomButton>
       </FlexContainer>
@@ -182,12 +199,15 @@ const LandingPageMain = () => {
           setIsOpenSeatModal(false);
           setSelectedSeats(undefined);
         }}
+        setSteps={setSteps}
+        steps={steps}
         isModalOpen={isOpenSeatModal}
         setSelectedSeats={onSelectSeat}
         selectedSeats={selectedSeats}
         onConfirmTripChange={onConfirmTripChange}
         confirmTripInfo={confirmTripInfo}
         onConfirmTripSubmit={onConfirmTripSubmit}
+        loading={loading}
       />
     </MainContainer>
   );
