@@ -16,7 +16,7 @@ export function getRouteApi(routeName?: string) {
   });
 }
 
-export function getTripDetails(from: string, to: string) {
+export function getTripDetailsApi(from: string, to: string) {
   console.log(from, to);
   return new Promise<AxiosResponse<ITrip[]>>((resolve, reject) => {
     publicInstance

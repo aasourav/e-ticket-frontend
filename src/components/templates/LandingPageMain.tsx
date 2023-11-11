@@ -7,7 +7,7 @@ import {
   IConfirmTrip,
   confirmTripApi,
   getRouteApi,
-  getTripDetails,
+  getTripDetailsApi,
 } from "../../api/trip";
 import { openNotification } from "../atoms/Notification";
 import InputWithLabel from "../molecules/InputWithLabel";
@@ -25,7 +25,7 @@ const MainContainer = styled.div`
 `;
 
 const CustomButton = styled(Button)`
-  height: 3rem !important;
+  height: 2.8rem !important;
   width: 8rem !important;
 `;
 
@@ -41,6 +41,7 @@ const TripWrapper = styled.div`
   flex-flow: column;
   gap: 12px;
   align-items: center;
+  overflow:scroll;
 `;
 
 export interface IPassentersInfo {
@@ -73,7 +74,7 @@ const LandingPageMain = () => {
   const onSubmitButton = async () => {
     setLoading(true);
     try {
-      const { data } = await getTripDetails(
+      const { data } = await getTripDetailsApi(
         routes?.from || "",
         routes?.to || ""
       );
