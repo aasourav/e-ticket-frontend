@@ -41,7 +41,7 @@ const TripWrapper = styled.div`
   flex-flow: column;
   gap: 12px;
   align-items: center;
-  overflow:scroll;
+  overflow-y: scroll;
 `;
 
 export interface IPassentersInfo {
