@@ -147,7 +147,7 @@ const LandingPageMain = () => {
     } catch (err: any) {
       openNotification({
         type: "error",
-        message: err.response.data.message || err.message,
+        message: err.response?.data?.message || err.message,
       });
       setLoading(false);
     }
