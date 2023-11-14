@@ -71,7 +71,7 @@ const RouteManagement = () => {
       setIsLoading(false);
       openNotification({
         type: "error",
-        message: err.response.data.message || err.message,
+        message: err.response?.data?.message || err.message,
       });
     }
   };
@@ -93,7 +93,7 @@ const RouteManagement = () => {
       setIsLoading(false);
       openNotification({
         type: "error",
-        message: err.response.data.message || err.message,
+        message: err.response?.data?.message || err.message,
       });
     }
   };
@@ -116,7 +116,7 @@ const RouteManagement = () => {
       setIsLoading(false);
       openNotification({
         type: "error",
-        message: err.response.data.message || err.message,
+        message: err.response?.data?.message || err.message,
       });
     }
   };
@@ -129,7 +129,7 @@ const RouteManagement = () => {
       } catch (err: any) {
         openNotification({
           type: "error",
-          message: err.response.data.message || err.message,
+          message: err.response?.data?.message || err.message,
         });
       }
     };
