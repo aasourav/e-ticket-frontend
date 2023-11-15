@@ -56,7 +56,8 @@ const initialBusData: IBus = {
 };
 const BusManagement = () => {
   const [buses, setBuses] = useState<IBus[]>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const [isSwitchLoading, setIsSwitchLoading] = useState<string>();
   const [busData, setBusData] = useState<IBus | undefined>(initialBusData);
   const [openModal, setOpenModal] = useState<{
     mode: "edit" | "add" | "delete";
@@ -126,7 +127,7 @@ const BusManagement = () => {
   };
 
   const handleToggleChange = async (busId: string, e: any) => {
-    setIsLoading(true);
+    setIsSwitchLoading(busId);
     try {
       await toggleBusAvailable(busId);
       setBuses(
@@ -144,9 +145,9 @@ const BusManagement = () => {
         type: "success",
         message: "Toggle success",
       });
-      setIsLoading(false);
+      setIsSwitchLoading(undefined);
     } catch (err: any) {
-      setIsLoading(false);
+      setIsSwitchLoading(undefined);
       openNotification({
         type: "error",
         message: err.response?.data?.message || err.message,
@@ -223,7 +224,7 @@ const BusManagement = () => {
               <BottomContent>
                 <Title>Ready for trip:</Title>
                 <Switch
-                  loading={isLoading}
+                  loading={isSwitchLoading === bus._id}
                   checked={bus.isAvailableForTrip}
                   onChange={(e) => handleToggleChange(bus._id, e)}
                   size="small"
