@@ -164,9 +164,9 @@ const BusManagement = () => {
       };
     });
   };
-  
+
   useEffect(() => {
-    const getRoutes = async () => {
+    const getBuses = async () => {
       try {
         const { data } = await getAllBuses();
         setBuses(data.getBuses);
@@ -177,7 +177,7 @@ const BusManagement = () => {
         });
       }
     };
-    getRoutes();
+    getBuses();
   }, []);
 
   return (
