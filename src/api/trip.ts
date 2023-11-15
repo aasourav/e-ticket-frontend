@@ -7,7 +7,6 @@ export function getRouteApi(routeName?: string) {
     publicInstance
       .get(`route/get-route/${routeName ? routeName : undefined}`)
       .then((resp) => {
-        console.log(resp);
         resolve(resp);
       })
       .catch((err) => {
@@ -17,7 +16,6 @@ export function getRouteApi(routeName?: string) {
 }
 
 export function getTripDetailsApi(from: string, to: string) {
-  console.log(from, to);
   return new Promise<AxiosResponse<ITrip[]>>((resolve, reject) => {
     publicInstance
       .get(`trip/trip-list/from/${from}/to/${to}`)
@@ -46,7 +44,6 @@ export function confirmTripApi(value: IConfirmTrip) {
         resolve(resp);
       })
       .catch((err) => {
-        console.log("err: ", err);
         reject(err);
       });
   });

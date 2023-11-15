@@ -168,7 +168,6 @@ const BusManagement = () => {
     const getRoutes = async () => {
       try {
         const { data } = await getAllBuses();
-        console.log(data);
         setBuses(data.getBuses);
       } catch (err: any) {
         openNotification({

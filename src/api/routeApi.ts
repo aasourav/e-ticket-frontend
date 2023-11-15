@@ -6,7 +6,6 @@ export function getRouteListApi() {
     publicInstance
       .get(`route/all-routes`)
       .then((resp) => {
-        console.log(resp);
         resolve(resp);
       })
       .catch((err) => {
@@ -22,7 +21,6 @@ export function createRouteApi(name: string) {
         name,
       })
       .then((resp) => {
-        console.log(resp);
         resolve(resp);
       })
       .catch((err) => {
@@ -39,7 +37,6 @@ export function updateRouteApi(routeId: string, updatedName: string) {
         updatedName,
       })
       .then((resp) => {
-        console.log(resp);
         resolve(resp);
       })
       .catch((err) => {
@@ -53,7 +50,6 @@ export function deleteRouteApi(routeId: string) {
     publicInstance
       .delete(`route/delete/${routeId}`)
       .then((resp) => {
-        console.log(resp);
         resolve(resp);
       })
       .catch((err) => {
