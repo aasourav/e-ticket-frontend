@@ -142,11 +142,7 @@ const RouteManagement = () => {
   return (
     <MainContainer>
       <div>
-        <Button
-          onClick={() => setIsModal({ type: "create" })}
-          size="large"
-          type="primary"
-        >
+        <Button onClick={() => setIsModal({ type: "create" })} type="primary">
           Add Route
         </Button>
       </div>
@@ -154,7 +150,7 @@ const RouteManagement = () => {
         {routes?.length &&
           routes.map((route) => (
             <RouteWrapper key={route._id}>
-              <Title font_size="1.25rem">
+              <Title font_size="1rem">
                 {firstCharIsCapital(route.locationName)}
               </Title>
               <ModifyWrapper>
