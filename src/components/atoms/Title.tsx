@@ -7,8 +7,8 @@ export const Title = styled.p<{
   color?: string;
 }>`
   font-size: ${({ font_size }) => font_size};
-  font-family: "Josefin";
+  font-family: "ubuntu";
   font-weight: ${({ font_weight }) => font_weight};
-  color:${({ color }) => color};
+  color:${({ color }) => color || "#4a4a4a"};
   margin: 0;
 `;

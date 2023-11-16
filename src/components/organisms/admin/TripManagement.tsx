@@ -191,6 +191,11 @@ export const TripManagement = () => {
     };
     getTrips();
   }, []);
+
+  const firstCharIsCapital = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   return (
     <ContentWrapper>
       <div>
@@ -212,8 +217,8 @@ export const TripManagement = () => {
                 <Title font_size="1.15rem" font_weight={600}>
                   {trip.busName}
                 </Title>
-                <Title font_weight={500} font_size=".85rem">
-                  {dayjs(trip.departure_time).format("DD MMM HH:MM a")}
+                <Title color="gray" font_weight={600} font_size=".9rem">
+                  {dayjs(trip.departure_time).format("dddd MMM DD - h:mm A")}
                 </Title>
                 <div>
                   <Button
@@ -236,7 +241,7 @@ export const TripManagement = () => {
                 </div>
               </TopWrapper>
               <Title font_size="1rem" font_weight={500}>
-                {trip.from} - {trip.to}
+                {firstCharIsCapital(trip.from)} - {firstCharIsCapital(trip.to)}
               </Title>
               <Title>Ticket Price: {trip.price} Tk</Title>
               <div>
@@ -337,7 +342,8 @@ export const TripManagement = () => {
                 : undefined
             }
             showTime
-            format="YYYY-MM-DD HH:mm:A"
+            format="YYYY-MM-DD hh:mm:A"
+            minuteStep={30 as any}
             placeholder="Select Date and Time"
             onChange={(value) => {
               onTripCreateChange("departure_time", value);
