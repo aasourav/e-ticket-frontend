@@ -275,7 +275,12 @@ export const TripManagement = () => {
           ))}
       </CardWrapper>
       {/* passengers modal */}
-      <Modal style={{ padding: 0 }} footer={false} open={!!openPassengerModal}>
+      <Modal
+        onCancel={() => setOpenPassengerModal(undefined)}
+        style={{ padding: 0 }}
+        footer={false}
+        open={!!openPassengerModal}
+      >
         <Table
           style={{ paddingTop: "1.5rem" }}
           columns={columns as any}

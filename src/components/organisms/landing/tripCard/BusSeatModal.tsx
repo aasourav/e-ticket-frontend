@@ -12,12 +12,12 @@ const SeatBoxWrapper = styled(Button)<{
   is_selected?: boolean;
 }>`
   width: 100%;
-  height: 60px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  background-color: ${({ is_selected }) => (is_selected ? "red" : "#d2d8d6")};
+  background-color: ${({ is_selected }) => (is_selected ? "white" : "#d2d8d6")};
   background-image: ${({ is_selected }) =>
     `linear-gradient(315deg,${
       is_selected ? "teal" : "#d2d8d6"
@@ -28,7 +28,11 @@ const SeatBoxWrapper = styled(Button)<{
 const SeatBox = (value: any, isSelected?: boolean, isDisabled?: boolean) => {
   return (
     <SeatBoxWrapper disabled={isDisabled} is_selected={isSelected}>
-      <Title font_size="1.15rem" font_weight={600}>
+      <Title
+        color={isDisabled ? "#c2bfbf" : undefined}
+        font_size="1.15rem"
+        font_weight={600}
+      >
         {value}
       </Title>
     </SeatBoxWrapper>
@@ -46,17 +50,20 @@ const ModalBody = styled.div`
   grid-template-columns: repeat(4, auto);
   grid-row-gap: 1rem;
   grid-column-gap: 1rem;
+  padding: 2% 17%;
+  border-radius: 20px;
+  background: #f4f4f4;
 `;
 
 const SeatBoxMain = styled.div<{ extra_space?: boolean }>`
-  margin-right: ${({ extra_space }) => (extra_space ? "4rem" : "0")};
+  margin-right: ${({ extra_space }) => (extra_space ? "2.5rem" : "0")};
 `;
 
 const ImageWrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: flex-end;
-  margin: 2rem 2rem 2rem 0;
+  margin: 1.25rem 2rem .5rem 0;
 `;
 
 const SlipWrapper = styled.div`
