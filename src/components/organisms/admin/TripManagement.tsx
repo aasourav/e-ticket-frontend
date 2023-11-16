@@ -8,13 +8,13 @@ import {
   updateTripApi,
 } from "../../../api/adminTripApi";
 import { openNotification } from "../../atoms/Notification";
-import { Button, DatePicker, Input, Modal, Select } from "antd";
+import { Button, DatePicker, Input, Modal, Select, Table } from "antd";
 import { Title } from "../../atoms/Title";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { IBus, getAllBuses } from "../../../api/busApi";
+import { getAllBuses } from "../../../api/busApi";
 import { getRouteListApi } from "../../../api/routeApi";
-import { IRoutes } from "./RouteManagement";
+import { ColumnsType } from "antd/es/table";
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -65,6 +65,7 @@ interface ITrip {
   to: string;
   price: string;
   departure_time: Date;
+  passengers: { name: string; phoneNumber: string; seatNumbers: string[] }[];
 }
 export const TripManagement = () => {
   const [trips, setTrips] = useState<ITrip[]>();
@@ -76,6 +77,7 @@ export const TripManagement = () => {
     mode: "edit" | "add" | "delete";
     tripId: string;
   }>();
+  const [openPassengerModal, setOpenPassengerModal] = useState<string>();
 
   const onTripCreateChange = (name: keyof ITripCreate, value: any) => {
     setTripData((prev) => ({ ...prev, [name]: value }));
@@ -196,6 +198,23 @@ export const TripManagement = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const columns: ColumnsType = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      width: 150,
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      width: 150,
+    },
+    {
+      title: "Seat Number(s)",
+      dataIndex: "seatNumbers",
+    },
+  ];
+
   return (
     <ContentWrapper>
       <div>
@@ -245,11 +264,37 @@ export const TripManagement = () => {
               </Title>
               <Title>Ticket Price: {trip.price} Tk</Title>
               <div>
-                <Button type="dashed">View passengers</Button>
+                <Button
+                  onClick={() => setOpenPassengerModal(trip._id)}
+                  type="dashed"
+                >
+                  View passengers
+                </Button>
               </div>
             </TripWrapper>
           ))}
       </CardWrapper>
+      {/* passengers modal */}
+      <Modal
+        onCancel={() => setOpenPassengerModal(undefined)}
+        style={{ padding: 0 }}
+        footer={false}
+        open={!!openPassengerModal}
+      >
+        <Table
+          style={{ paddingTop: "1.5rem" }}
+          columns={columns as any}
+          dataSource={trips
+            ?.find((trip) => trip._id === openPassengerModal)
+            ?.passengers.map((passenger, key) => ({
+              key,
+              ...passenger,
+              seatNumbers: passenger.seatNumbers.join(", "),
+            }))}
+          pagination={false}
+          scroll={{ y: 540 }}
+        />
+      </Modal>
       {/* Delete Bus */}
       <Modal
         open={openModal && openModal.mode === "delete" ? true : false}
