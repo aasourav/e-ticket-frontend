@@ -333,18 +333,6 @@ export const TripManagement = () => {
           />
         </div>
         <div>
-          <Title font_size="1.15rem">To: </Title>
-          <Select
-            placeholder="Select destination route"
-            value={tripData.toId || undefined}
-            options={routes}
-            style={{ width: "100%" }}
-            onChange={(value) => {
-              onTripCreateChange("toId", value);
-            }}
-          />
-        </div>
-        <div>
           <Title font_size="1.15rem">From: </Title>
           <Select
             placeholder="Select from route"
@@ -353,6 +341,18 @@ export const TripManagement = () => {
             style={{ width: "100%" }}
             onChange={(value) => {
               onTripCreateChange("fromId", value);
+            }}
+          />
+        </div>
+        <div>
+          <Title font_size="1.15rem">To: </Title>
+          <Select
+            placeholder="Select destination route"
+            value={tripData.toId || undefined}
+            options={routes}
+            style={{ width: "100%" }}
+            onChange={(value) => {
+              onTripCreateChange("toId", value);
             }}
           />
         </div>
