@@ -5,12 +5,18 @@ import {
   createTripApi,
   deleteTripApi,
   getAllTripsApi,
+  tripCancellationApi,
   updateTripApi,
 } from "../../../api/adminTripApi";
 import { openNotification } from "../../atoms/Notification";
 import { Button, DatePicker, Input, Modal, Select, Table } from "antd";
 import { Title } from "../../atoms/Title";
-import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import {
+  DeleteFilled,
+  DeleteOutlined,
+  EditFilled,
+  EditOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import { getAllBuses } from "../../../api/busApi";
 import { getRouteListApi } from "../../../api/routeApi";
@@ -22,6 +28,10 @@ const ContentWrapper = styled.div`
   gap: 1rem;
 `;
 
+const StyledModal = styled(Modal)`
+  width: 650px !important;
+`;
+
 const TripWrapper = styled.div`
   display: flex;
   flex-flow: column;
@@ -30,6 +40,23 @@ const TripWrapper = styled.div`
   background: rgb(253, 247, 247);
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   gap: 0.5rem;
+`;
+
+const SeatWrapper = styled.div`
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 2px;
+`;
+
+const SeatsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 1.5rem 0 0 0;
+  gap: 0.25rem;
 `;
 
 const CardWrapper = styled.div`
@@ -65,7 +92,12 @@ interface ITrip {
   to: string;
   price: string;
   departure_time: Date;
-  passengers: { name: string; phoneNumber: string; seatNumbers: string[] }[];
+  passengers: {
+    name: string;
+    phoneNumber: string;
+    seatNumbers: string[];
+    _id: string;
+  }[];
 }
 export const TripManagement = () => {
   const [trips, setTrips] = useState<ITrip[]>();
@@ -73,6 +105,12 @@ export const TripManagement = () => {
   const [buses, setBuses] = useState<{ label: string; value: string }[]>();
   const [routes, setRoutes] = useState<{ label: string; value: string }[]>();
   const [tripData, setTripData] = useState<ITripCreate>(initialTrip);
+  const [passengerTripCancellationModal, setPassengerTripCancellationModal] =
+    useState<{
+      tripId: string;
+      passengerId: string;
+      seatNumbers: string[];
+    }>();
   const [openModal, setOpenModal] = useState<{
     mode: "edit" | "add" | "delete";
     tripId: string;
@@ -184,6 +222,8 @@ export const TripManagement = () => {
     const getTrips = async () => {
       try {
         const { data } = await getAllTripsApi();
+        console.log("CT", data.getTrips);
+
         setTrips(data.getTrips);
       } catch (err: any) {
         openNotification({
@@ -214,7 +254,61 @@ export const TripManagement = () => {
       title: "Seat Number(s)",
       dataIndex: "seatNumbers",
     },
+    {
+      title: "Action",
+      dataIndex: "passengerEditInfo",
+      render: ({ tripId, passengerId, seatNumbers }) => (
+        <Button
+          style={{ border: "none" }}
+          icon={<EditOutlined />}
+          onClick={() => {
+            setPassengerTripCancellationModal({
+              tripId,
+              passengerId,
+              seatNumbers,
+            });
+          }}
+        />
+      ),
+    },
   ];
+
+  const onCancelConfirm = async () => {
+    if (!passengerTripCancellationModal) return;
+    setIsLoading(true);
+    try {
+      const { passengerId, seatNumbers, tripId } =
+        passengerTripCancellationModal;
+      const { data } = await tripCancellationApi(
+        tripId,
+        passengerId,
+        seatNumbers
+      );
+
+      setTrips((prev) => {
+        if (prev) {
+          return prev.map((trip) =>
+            trip._id === passengerTripCancellationModal.tripId
+              ? data.tripDoc
+              : trip
+          );
+        }
+      });
+
+      openNotification({
+        type: "success",
+        message: "Trip cancellation success",
+      });
+      setPassengerTripCancellationModal(undefined);
+    } catch (err: any) {
+      openNotification({
+        type: "error",
+        message: err.response?.data?.message || err.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <ContentWrapper>
@@ -275,10 +369,45 @@ export const TripManagement = () => {
             </TripWrapper>
           ))}
       </CardWrapper>
-      {/* passengers modal */}
+      {/* trip cancellation modal */}
       <Modal
+        open={!!passengerTripCancellationModal}
+        okText="Confirm cancel"
+        confirmLoading={isLoading}
+        onOk={onCancelConfirm}
+        onCancel={() => {
+          setPassengerTripCancellationModal(undefined);
+        }}
+      >
+        <SeatsContainer>
+          {passengerTripCancellationModal?.seatNumbers?.map((seat) => (
+            <SeatWrapper key={seat}>
+              <Title>{seat}</Title>
+              <Button
+                size="small"
+                danger
+                onClick={() =>
+                  setPassengerTripCancellationModal(
+                    (prev) =>
+                      prev && {
+                        ...prev,
+                        seatNumbers: prev.seatNumbers.filter(
+                          (sn) => sn !== seat
+                        ),
+                      }
+                  )
+                }
+                style={{ border: "0" }}
+                icon={<DeleteFilled />}
+              />
+            </SeatWrapper>
+          ))}
+        </SeatsContainer>
+      </Modal>
+
+      {/* passengers modal */}
+      <StyledModal
         onCancel={() => setOpenPassengerModal(undefined)}
-        style={{ padding: 0 }}
         footer={false}
         open={!!openPassengerModal}
       >
@@ -291,11 +420,17 @@ export const TripManagement = () => {
               key,
               ...passenger,
               seatNumbers: passenger.seatNumbers.join(", "),
+              passengerEditInfo: {
+                passengerId: passenger._id,
+                tripId: openPassengerModal,
+                seatNumbers: passenger.seatNumbers,
+              },
             }))}
           pagination={false}
           scroll={{ y: 540 }}
         />
-      </Modal>
+      </StyledModal>
+
       {/* Delete Bus */}
       <Modal
         open={openModal && openModal.mode === "delete" ? true : false}
@@ -305,6 +440,7 @@ export const TripManagement = () => {
         title={<Title>Are you sure you want to delete?</Title>}
         onOk={() => onDeleteSubmit(openModal?.tripId || "")}
       />
+
       {/* Add or edit Bus */}
       <Modal
         open={openModal && !(openModal.mode === "delete") ? true : false}
@@ -357,18 +493,6 @@ export const TripManagement = () => {
             }}
           />
         </div>
-
-        {/* <div>
-          <Title font_size="1.15rem">Select bus type: </Title>
-          <Select
-            placeholder="Select destination route"
-            options={[
-              { label: "AC", value: "ac" },
-              { label: "Non AC", value: "non_ac" },
-            ]}
-            style={{ width: "100%" }}
-          />
-        </div> */}
         <div>
           <Title font_size="1.15rem">Ticket price: </Title>
           <Input
