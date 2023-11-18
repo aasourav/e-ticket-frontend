@@ -1,6 +1,21 @@
 import { AxiosResponse } from "axios";
 import { publicInstance } from "./baseApi";
 
+export function tripCancellationApi(
+  tripId: string,
+  passengerId: string,
+  passengerData: string[]
+) {
+  return new Promise<AxiosResponse<any>>((resolve, reject) => {
+    publicInstance
+      .put(`trip/trip-cancel/trip/${tripId}/passenger/${passengerId}`, {
+        passengerData,
+      })
+      .then((resp) => resolve(resp))
+      .catch((err) => reject(err));
+  });
+}
+
 export function getAllTripsApi() {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
     publicInstance

@@ -17,10 +17,14 @@ interface IProps {
   onSearch: (value: any) => void;
   label: string;
   options: { label: string; value: string }[];
+  value?: string;
+  placeholder?: string;
 }
 const InputWithLabel: React.FC<IProps> = ({
   onSearch,
   onSelect,
+  placeholder,
+  value,
   options,
   label,
 }) => {
@@ -28,6 +32,8 @@ const InputWithLabel: React.FC<IProps> = ({
     <InputGroup>
       <Label>{label}</Label>
       <AutoCompleteInput
+        value={value}
+        placeholder={placeholder}
         onSelect={onSelect}
         onSearch={onSearch}
         options={options}
