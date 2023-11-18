@@ -1,8 +1,8 @@
 import React from "react";
-import { AutoComplete } from "antd";
+import { AutoComplete, Select } from "antd";
 import styled from "styled-components";
 
-const StyledAutoComplete = styled(AutoComplete)`
+const StyledAutoComplete = styled(Select)`
   height: 3rem;
 `;
 
@@ -22,11 +22,14 @@ const AutoCompleteInput: React.FC<IProps> = ({
 }) => {
   return (
     <StyledAutoComplete
-      options={options}
+      showSearch
+      value={value}
+      filterOption={false}
       style={{ width: 250 }}
+      placeholder={placeholder}
+      options={options}
       onSelect={onSelect}
       onSearch={onSearch}
-      placeholder={placeholder}
     />
   );
 };

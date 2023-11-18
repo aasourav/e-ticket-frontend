@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import Header from "../organisms/landing/header/Header";
 import { Button, Divider } from "antd";
@@ -86,21 +86,23 @@ const LandingPageMain = () => {
     }
   };
 
-  const onSearch = async (searchValue: string) => {
-    try {
-      const { data } = await getRouteApi(searchValue);
-      setOptions(
-        data.response?.map((d: { locationName: string; _id: string }) => ({
-          label:
-            d.locationName.charAt(0).toUpperCase() + d.locationName.slice(1),
-          value:
-            d.locationName.charAt(0).toUpperCase() + d.locationName.slice(1),
-        }))
-      );
-    } catch (err: any) {
-      openNotification({ type: "error", message: err.message });
-    }
-  };
+  const onSearch = useCallback(
+    async (searchValue: string) => {
+      try {
+        const { data } = await getRouteApi(searchValue);
+        setOptions(
+          data.response?.map((d: { locationName: string; _id: string }) => ({
+            label:
+              d.locationName.charAt(0).toUpperCase() + d.locationName.slice(1),
+            value: d._id,
+          }))
+        );
+      } catch (err: any) {
+        openNotification({ type: "error", message: err.message });
+      }
+    },
+    [setOptions]
+  );
 
   const onSelect = async (name: "from" | "to", string: string) => {
     setRoutes((prev) =>
@@ -161,12 +163,16 @@ const LandingPageMain = () => {
         <InputWithLabel
           onSearch={onSearch}
           label="From"
+          value={routes?.from}
+          placeholder="Ex: Dhaka"
           onSelect={(value) => onSelect("from", value)}
           options={options || []}
         />
         <InputWithLabel
           onSearch={onSearch}
           label="To"
+          value={routes?.to}
+          placeholder="Ex: Gazipur"
           onSelect={(value) => onSelect("to", value)}
           options={options || []}
         />

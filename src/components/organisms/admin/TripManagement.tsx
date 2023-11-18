@@ -124,7 +124,6 @@ export const TripManagement = () => {
   const handleCreateUpdateTrip = async () => {
     const { data: busData } = await getAllBuses();
     const { data: routeData } = await getRouteListApi();
-    console.log("busData: ", busData);
     setBuses(
       busData?.getBuses?.map(
         (bus: { _id: string; busType: string; busName: string }) => ({
@@ -222,8 +221,6 @@ export const TripManagement = () => {
     const getTrips = async () => {
       try {
         const { data } = await getAllTripsApi();
-        console.log("CT", data.getTrips);
-
         setTrips(data.getTrips);
       } catch (err: any) {
         openNotification({
