@@ -86,10 +86,11 @@ export const TripManagement = () => {
   const handleCreateUpdateTrip = async () => {
     const { data: busData } = await getAllBuses();
     const { data: routeData } = await getRouteListApi();
+    console.log("busData: ", busData);
     setBuses(
       busData?.getBuses?.map(
-        (bus: { _id: string; type: string; busName: string }) => ({
-          label: `${bus.busName} - ${bus.type === "ac" ? "AC" : "Non AC"}`,
+        (bus: { _id: string; busType: string; busName: string }) => ({
+          label: `${bus.busName} - ${bus.busType === "ac" ? "AC" : "Non AC"}`,
           value: bus._id,
         })
       )
@@ -192,7 +193,7 @@ export const TripManagement = () => {
       }
     };
     getTrips();
-  }, []);
+  }, [setTrips]);
 
   const firstCharIsCapital = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -323,7 +324,7 @@ export const TripManagement = () => {
         <div>
           <Title font_size="1.15rem">Select bus: </Title>
           <Select
-            placeholder="Select destination route"
+            placeholder="Select bus"
             value={tripData.busId || undefined}
             options={buses}
             style={{ width: "100%" }}
