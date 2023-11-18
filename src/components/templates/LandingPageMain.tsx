@@ -81,7 +81,10 @@ const LandingPageMain = () => {
       setTrip(data);
       setLoading(false);
     } catch (err: any) {
-      openNotification({ type: "error", message: err.message });
+      openNotification({
+        type: "error",
+        message: err.response?.data?.message || err.message,
+      });
       setLoading(false);
     }
   };
@@ -98,7 +101,10 @@ const LandingPageMain = () => {
           }))
         );
       } catch (err: any) {
-        openNotification({ type: "error", message: err.message });
+        openNotification({
+          type: "error",
+          message: err.response?.data?.message || err.message,
+        });
       }
     },
     [setOptions]
