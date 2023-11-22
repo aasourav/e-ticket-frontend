@@ -1,6 +1,7 @@
 import React from "react";
 import AdminMain from "../../components/templates/admin/AdminMain";
 import Head from "next/head";
+import getServerSideProps from "../../context/lib/getServerSidePropsForAdmin";
 
 const AdminPage: React.FC = () => {
   return (
@@ -17,5 +18,7 @@ const AdminPage: React.FC = () => {
     </div>
   );
 };
+
+export { getServerSideProps };
 
 export default AdminPage;

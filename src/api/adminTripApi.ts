@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { publicInstance } from "./baseApi";
+import { axiosInstance } from "./baseApi";
 
 export function tripCancellationApi(
   tripId: string,
@@ -7,7 +7,7 @@ export function tripCancellationApi(
   passengerData: string[]
 ) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .put(`trip/trip-cancel/trip/${tripId}/passenger/${passengerId}`, {
         passengerData,
       })
@@ -18,7 +18,7 @@ export function tripCancellationApi(
 
 export function getAllTripsApi() {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .get(`trip/get-all-trips`)
       .then((resp) => {
         resolve(resp);
@@ -38,7 +38,7 @@ export interface ITripCreate {
 }
 export function createTripApi(tripData: ITripCreate) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .post(`trip/create`, { ...tripData })
       .then((resp) => {
         resolve(resp);
@@ -60,7 +60,7 @@ interface ITripUpdate {
 export function updateTripApi(tripData: ITripUpdate) {
   const { _id, ...restData } = tripData;
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .put(`trip/update-trip/${_id}`, { ...restData })
       .then((resp) => {
         resolve(resp);
@@ -73,7 +73,7 @@ export function updateTripApi(tripData: ITripUpdate) {
 
 export function deleteTripApi(tripId: string) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .delete(`trip/delete/${tripId}`)
       .then((resp) => {
         resolve(resp);
@@ -83,3 +83,12 @@ export function deleteTripApi(tripId: string) {
       });
   });
 }
+
+export const loginAdmin = async (data: { email: string; password: string }) => {
+  return new Promise<AxiosResponse<any>>((resolve, reject) => {
+    axiosInstance
+      .post(`/login`, { ...data })
+      .then((resp) => resolve(resp))
+      .catch((err) => reject(err));
+  });
+};

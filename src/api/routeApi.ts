@@ -1,9 +1,9 @@
 import { AxiosResponse } from "axios";
-import { publicInstance } from "./baseApi";
+import { axiosInstance } from "./baseApi";
 
 export function getRouteListApi() {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .get(`route/all-routes`)
       .then((resp) => {
         resolve(resp);
@@ -16,7 +16,7 @@ export function getRouteListApi() {
 
 export function createRouteApi(name: string) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .post(`route/create`, {
         name,
       })
@@ -31,7 +31,7 @@ export function createRouteApi(name: string) {
 
 export function updateRouteApi(routeId: string, updatedName: string) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .put(`route/update`, {
         routeId,
         updatedName,
@@ -47,7 +47,7 @@ export function updateRouteApi(routeId: string, updatedName: string) {
 
 export function deleteRouteApi(routeId: string) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .delete(`route/delete/${routeId}`)
       .then((resp) => {
         resolve(resp);
