@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { publicInstance } from "./baseApi";
+import { axiosInstance } from "./baseApi";
 
 interface IBusCreate {
   busName: string;
@@ -8,7 +8,7 @@ interface IBusCreate {
 }
 export function createBusApi(busData: IBusCreate) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .post(`bus/create`, { ...busData })
       .then((resp) => {
         resolve(resp);
@@ -25,7 +25,7 @@ export interface IBus extends IBusCreate {
 }
 export function updateBusApi(newData: IBus) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .put(`bus/update/${newData._id}`, { ...newData })
       .then((resp) => {
         resolve(resp);
@@ -38,7 +38,7 @@ export function updateBusApi(newData: IBus) {
 
 export function deleteBus(busId: string) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .delete(`bus/delete/${busId}`)
       .then((resp) => {
         resolve(resp);
@@ -51,7 +51,7 @@ export function deleteBus(busId: string) {
 
 export function toggleBusAvailable(busId: string) {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .patch(`bus/toggle-available/${busId}`)
       .then((resp) => {
         resolve(resp);
@@ -64,7 +64,7 @@ export function toggleBusAvailable(busId: string) {
 
 export function getAllBuses() {
   return new Promise<AxiosResponse<any>>((resolve, reject) => {
-    publicInstance
+    axiosInstance
       .get(`bus/get-buses`)
       .then((resp) => {
         resolve(resp);
